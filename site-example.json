@@ -1,0 +1,14 @@
+{
+    "alias": [
+        "grafana.inspace.bristolhackspace.org"
+    ],
+    "jwt": {
+        "publicKey": "/path/to/public-key.pem",
+        "privateKey": "./server.key",
+        "subject": "email",
+        "audience": ["bhs-mq"],
+        "keyId" : "testing"
+    },
+    "redirect" : "/?auth_token={{jwt}}",
+    "cookie": "user_session"
+}
