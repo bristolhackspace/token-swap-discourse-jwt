@@ -60,11 +60,11 @@ func main() {
 
         siteHash := SiteHash(host)
 
-        redirectUrl := BuildConnectUrl(protocol + host + "/.well-known/token-swap-discource-jwt/end", discourceServer, discourceKey, siteHash)
-        c.String(http.StatusOK, redirectUrl)
+        redirectUrl := BuildConnectUrl(protocol + host + "/.well-known/token-swap-discourse-jwt/end", discourceServer, discourceKey, siteHash)
+        c.Redirect(http.StatusFound, redirectUrl)
     })
 
-    router.GET("/.well-known/token-swap-discource-jwt/end", func(c *gin.Context) {
+    router.GET("/.well-known/token-swap-discourse-jwt/end", func(c *gin.Context) {
         sso := c.Query("sso")
         sig := c.Query("sig")
         host := strings.ToLower(c.Request.Host)
