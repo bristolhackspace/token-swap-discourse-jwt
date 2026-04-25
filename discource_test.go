@@ -21,7 +21,7 @@ func TestBuildConnectUrl(t *testing.T) {
 }
 
 func TestDecodeSSOParameter(t *testing.T) {
-    sso := "bm9uY2U9eE0lMkZUekV4RklyUjhLbzBKTEVPdkRnRlkmZW1haWw9YWFyb25kcyU0MGdtYWlsLmNvbSZleHRlcm5hbF9pZD0zNzYmbmFtZT1BYXJvbitTaHJpbXB0b24mZ3JvdXBzPUNvbW1pdHRlZSUyQ0luZHVjdG9ycyZ1c2VybmFtZT1hYXJvbmRz"
+    sso := "bm9uY2U9MTc3NzE1NzIyMC1pOWxvNXRmV1ZZLWQ2ZTEwMmJkYWYmZW1haWw9YWFyb25kcyU0MGdtYWlsLmNvbSZleHRlcm5hbF9pZD0xMCZuYW1lPUFhcm9uK1NocmltcHRvbiZncm91cHM9YWRtaW4lMkNjb21taXR0ZWUmdXNlcm5hbWU9YWFyb25kcw=="
 
     user, err := DecodeSSOParameter(sso)
 
@@ -45,5 +45,7 @@ func TestDecodeSSOParameter(t *testing.T) {
         t.Errorf("No UserName")
     }
 
-    fmt.Println(user)
+    if len(user.Groups) < 2 {
+        t.Errorf("Groups missing")
+    }
 }

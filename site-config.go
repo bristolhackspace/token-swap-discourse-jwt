@@ -11,7 +11,10 @@ type JwtConfig struct {
     PrivateKeyBytes []byte
     Subject string `json:"subject"`
     Audience []string `json:"audience"`
+    Scope []string `json:"scope"`
+    AllGroups bool `json:"allGroups"`
     KeyId string `json:"keyId"`
+    Expiry int `json:"expiry"`
 }
 
 type SiteConfig struct {

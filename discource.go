@@ -16,6 +16,7 @@ type DiscourceUser struct {
     Name string
     UserName string
     Nonce string
+    Groups []string
 }
 
 func SiteHash(host string) string {
@@ -125,6 +126,10 @@ func DecodeDiscourceUser(query string) (DiscourceUser, error) {
 
     if queryValues.Get("nonce") != "" {
         dcUser.Nonce = queryValues.Get("nonce")
+    }
+
+    if queryValues.Get("groups") != "" {
+        dcUser.Groups = strings.Split(queryValues.Get("groups"),",") 
     }
 
     return dcUser, nil

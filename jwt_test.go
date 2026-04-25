@@ -10,6 +10,7 @@ func TestJwt(t *testing.T) {
         "Test Person",
         "test.person",
         "123456-asfaposi-01234abc",
+        []string {"test", "admin"},
     }
 
     jwt, err := JWTFromSiteDiscordUser(siteConfig, testUser)

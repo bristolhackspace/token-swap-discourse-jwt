@@ -3,3 +3,6 @@
 *.swq
 
 *.key
+aaron-*
+token-swap-discourse-jwt
+sites/localhost*

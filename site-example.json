@@ -7,7 +7,10 @@
         "privateKey": "./server.key",
         "subject": "email",
         "audience": ["bhs-mq"],
-        "keyId" : "testing"
+        "allGroups": true,
+        "scope": ["test:*.*.*"],
+        "keyId" : "testing",
+        "expiry": 86400
     },
     "redirect" : "/?auth_token={{jwt}}",
     "cookie": "user_session"

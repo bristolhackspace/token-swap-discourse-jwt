@@ -6,12 +6,18 @@ import "log"
 import "os"
 import "strings"
 import "time"
+import "syscall"
 
 func main() {
     router := gin.Default()
     discourceServer := os.Getenv("TOKEN_SWAP_DISCOURSE_SERVER")
     discourceKey := []byte(os.Getenv("TOKEN_SWAP_DISCOURSE_KEY"))
+    port := os.Getenv("TOKEN_SWAP_PORT")
     //failRedirect := "http://localhost:5000/"
+
+    if port == "" {
+        port = "0.0.0.0:3400"
+    }
 
     hostToSite := make(map[string]SiteConfig)
 
@@ -131,5 +137,10 @@ func main() {
         } 
     })
 
-    router.Run("0.0.0.0:3400");
+    if strings.HasPrefix(port, "/") {
+        syscall.Umask(0o007)
+        router.RunUnix(port)
+    } else {
+        router.Run(port);
+    }
 }

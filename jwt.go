@@ -8,6 +8,12 @@ import "os"
 import "strings"
 import "time"
 
+type ScopeGroupClaims struct {
+	Scope []string `json:"scope,omitempty"`
+    Group []string `json:"group,omitempty"`
+    jwt.RegisteredClaims
+}
+
 func JWTFromSiteDiscordUser(site SiteConfig, user DiscourceUser) (string, error) {
     var signKey *rsa.PrivateKey
     var signBytes []byte
@@ -39,9 +45,19 @@ func JWTFromSiteDiscordUser(site SiteConfig, user DiscourceUser) (string, error)
 	if _, err = rand.Read(randomBytes); err != nil {
         return "", err
     }
-    
 
-    token := getToken(randomBytes, subject, site.JwtConfig.Audience)
+    groups := make([]string,0)
+    scopes := make([]string,0)
+
+    if site.JwtConfig.AllGroups {
+        groups = user.Groups 
+    }
+
+    if len(site.JwtConfig.Scope) > 0 {
+        scopes = site.JwtConfig.Scope
+    }
+
+    token := getToken(randomBytes, subject, site.JwtConfig.Audience, scopes, groups, site.JwtConfig.Expiry)
 
     if site.JwtConfig.KeyId != "" {
         token.Header["kid"] = site.JwtConfig.KeyId
@@ -52,19 +68,28 @@ func JWTFromSiteDiscordUser(site SiteConfig, user DiscourceUser) (string, error)
     return jwt, err
 }
 
-func getToken(id []byte, subject string, audience []string) *jwt.Token {
+func getToken(id []byte, subject string, audience []string, scopes []string, groups []string, expiry int) *jwt.Token {
+
     
     expires := time.Now().Add(8 * time.Hour)
 
-    claims := jwt.RegisteredClaims{
-        ExpiresAt: jwt.NewNumericDate(expires),
-        IssuedAt:  jwt.NewNumericDate(time.Now()),
-        NotBefore: jwt.NewNumericDate(time.Now()),
-        Issuer: "token-swap.portal.bristolhackspace.org",
-        Subject: subject,
-        ID: base64.URLEncoding.EncodeToString(id),
-        Audience: audience,
-    } 
+    if expiry > 0 {
+        expires = time.Now().Add(time.Duration(expiry) * time.Second)
+    }
+
+    claims := ScopeGroupClaims{
+        scopes,
+        groups,
+        jwt.RegisteredClaims{
+            ExpiresAt: jwt.NewNumericDate(expires),
+            IssuedAt:  jwt.NewNumericDate(time.Now()),
+            NotBefore: jwt.NewNumericDate(time.Now()),
+            Issuer: "token-swap.portal.bristolhackspace.org",
+            Subject: subject,
+            ID: base64.URLEncoding.EncodeToString(id),
+            Audience: audience,
+        }, 
+    }
 
     token := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), claims)
     token.Header = map[string]any{
