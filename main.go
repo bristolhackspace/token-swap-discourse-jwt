@@ -51,7 +51,7 @@ func main() {
     router.GET("/.well-known/token-swap-discourse-jwt/start", func(c *gin.Context) { 
         host := strings.ToLower(c.Request.Host)
 
-        _, ok := hostToSite[host]
+        siteConfig, ok := hostToSite[host]
 
         if !ok {
             c.String(http.StatusNotFound, host)
@@ -60,7 +60,7 @@ func main() {
 
         protocol := "https://" 
 
-        if strings.HasPrefix(host, "localhost:") {
+        if strings.HasPrefix(host, "localhost:") || strings.HasPrefix(siteConfig.Redirect, "http://")  {
             protocol = "http://"
         }
 
