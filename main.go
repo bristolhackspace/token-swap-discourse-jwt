@@ -137,6 +137,11 @@ func main() {
         } 
     })
 
+    router.GET("/.well-known/token-swap-discourse-jwt/health", func(c *gin.Context) {
+        c.String(http.StatusOK, "OK")
+    })
+
+
     if strings.HasPrefix(port, "/") {
         syscall.Umask(0o007)
         router.RunUnix(port)
